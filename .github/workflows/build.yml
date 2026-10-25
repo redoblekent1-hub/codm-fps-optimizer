@@ -13,14 +13,9 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Set up Android NDK
-      uses: android-actions/setup-android@v3
-      with:
-        ndk-version: '25.2.9519653'
-
-    - name: Compile C++ Binaries
+    - name: Compile C++ Binaries via Native NDK
       run: |
-        $ANDROID_HOME/ndk/25.2.9519653/ndk-build -C jni
+        $ANDROID_NDK_LATEST_HOME/ndk-build -C jni
 
     - name: Package Module Layout
       run: |
