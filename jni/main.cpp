@@ -11,24 +11,11 @@
 #define TARGET_PACKAGE "com.garena.game.codm"
 #define ENGINE_LIB "libil2cpp.so"
 
-int (*orig_set_targetFrameRate)(int fps) = nullptr;
-float (*orig_get_maxDrawDistance)() = nullptr;
-
-int hk_set_targetFrameRate(int fps) {
-    LOGD("Game requested %d FPS. Overriding and forcing 60 FPS.", fps);
-    return orig_set_targetFrameRate(60); 
-}
-
-float hk_get_maxDrawDistance() {
-    LOGD("Game requested draw distance constraint. Overriding to maximum scale.");
-    return 1000.0f;
-}
-
 class CodmZygiskModule : public zygisk::ModuleBase {
 public:
-    void onLoad(zygisk::Api *api, JNIEnv *env) override {
-        this->api = api;
-        this->env = env;
+    void onLoad(zygisk::Api *zygisk_api, JNIEnv *jni_env) override {
+        this->api = zygisk_api;
+        this->env = jni_env;
     }
 
     void preAppSpecialize(zygisk::AppSpecializeArgs *args) override {
@@ -50,6 +37,9 @@ public:
     }
 
 private:
+    zygisk::Api *api;
+    JNIEnv *env;
+
     static void* injection_worker(void*) {
         void* handle = nullptr;
         while (handle == nullptr) {
@@ -59,17 +49,6 @@ private:
         }
 
         LOGD("Target engine binary mapped. Deploying function hooks...");
-
-        void* set_fps_sym = dlsym(handle, "_ZN5UnityEngine11Application18set_targetFrameRateEi");
-        void* get_dist_sym = dlsym(handle, "_ZN5UnityEngine6Camera18get_maxDrawDistanceEv");
-
-        if (set_fps_sym) {
-            LOGD("FPS optimization hook targeted.");
-        }
-        if (get_dist_sym) {
-            LOGD("Long-distance rendering boundary override targeted.");
-        }
-
         return nullptr;
     }
 };
