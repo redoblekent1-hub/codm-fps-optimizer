@@ -1,0 +1,6 @@
+id=codm_garena_optimizer
+name=CODM Garena Zygisk Optimizer
+version=v1.0.0
+versionCode=1
+author=ZygiskDeveloper
+description=Forces 60 FPS limits and extends engine render constraints inside CODM Garena.
