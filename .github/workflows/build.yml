@@ -1,0 +1,37 @@
+name: Compile Zygisk Module
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Android NDK
+      uses: android-actions/setup-android@v3
+      with:
+        ndk-version: '25.2.9519653'
+
+    - name: Compile C++ Binaries
+      run: |
+        $ANDROID_HOME/ndk/25.2.9519653/ndk-build -C jni
+
+    - name: Package Module Layout
+      run: |
+        mkdir -p output/zygisk/arm64-v8a
+        cp libs/arm64-v8a/libarm64-v8a.so output/zygisk/arm64-v8a.so
+        cp module.prop output/
+        cd output && zip -r ../codm_garena_optimizer.zip *
+
+    - name: Upload Flashable Module Zip
+      uses: actions/upload-artifact@v4
+      with:
+        name: CODM-Zygisk-Optimizer
+        path: codm_garena_optimizer.zip
+        
