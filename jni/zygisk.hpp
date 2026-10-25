@@ -1,7 +1,6 @@
 #pragma once
 
 #include <jni.h>
-#include <stdint.h>
 
 namespace zygisk {
 
@@ -13,9 +12,9 @@ enum Option : uint32_t {
 struct AppSpecializeArgs {
     jint &uid;
     jint &gid;
-    jint_array &gids;
+    jintArray &gids;
     jint &runtime_flags;
-    jobject_array &rlimits;
+    jobjectArray &rlimits;
     jint &mount_external;
     jstring &se_info;
     jstring &nice_name;
@@ -23,8 +22,8 @@ struct AppSpecializeArgs {
     jstring &instruction_set;
     jstring &app_data_dir;
     jboolean &is_top_app;
-    jobject_array &pkg_data_info_list;
-    jobject_array &whitelisted_data_info_list;
+    jobjectArray &pkg_data_info_list;
+    jobjectArray &whitelisted_data_info_list;
     jboolean &mount_data_dirs;
     jboolean &use_legacy_data;
 };
@@ -32,9 +31,9 @@ struct AppSpecializeArgs {
 struct ServerSpecializeArgs {
     jint &uid;
     jint &gid;
-    jint_array &gids;
+    jintArray &gids;
     jint &runtime_flags;
-    jobject_array &rlimits;
+    jobjectArray &rlimits;
     jlong &permitted_capabilities;
     jlong &effective_capabilities;
 };
@@ -62,4 +61,3 @@ void zygisk_module_entry(zygisk::Api *api, JNIEnv *env) { \
     static clazz module; \
     module.onLoad(api, env); \
 }
-
